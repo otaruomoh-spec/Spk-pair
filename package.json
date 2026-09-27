@@ -1,0 +1,7 @@
+{
+  "name": "spk-pair",
+  "version": "1.0.0",
+  "main": "pair.js",
+  "scripts": { "start": "node pair.js" },
+  "dependencies": { "express": "^4.18.2" }
+}
