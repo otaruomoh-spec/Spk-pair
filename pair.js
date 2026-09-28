@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
     else document.getElementById('result').innerText=data.error||'Error, retry';
   }
   </script>
-  <p style="color:#555;margin-top:40px">Powered by SPK - otaruomoh@gmail.com</p>
+  <p style="color:#555;margin-top:40px">Powered by SPK</p>
   </body></html>
   `);
 });
@@ -34,7 +34,6 @@ app.get('/', (req, res) => {
 app.get('/code', async (req, res) => {
   let num = req.query.number?.replace(/[^0-9]/g,'');
   if(!num) return res.json({error:'Enter number with country code'});
-  
   try {
     const { state, saveCreds } = await useMultiFileAuthState('./temp/'+num);
     const sock = makeWASocket({
@@ -43,20 +42,16 @@ app.get('/code', async (req, res) => {
       logger: pino({level:'silent'}),
       browser: ['SPK Pair', 'Chrome', '1.0']
     });
-
     if(!sock.authState.creds.registered){
       await delay(2000);
       let code = await sock.requestPairingCode(num);
       res.json({code: code});
     }
-
     sock.ev.on('creds.update', saveCreds);
-    
     setTimeout(() => { try{ require('fs').rmSync('./temp/'+num, {recursive:true, force:true}) }catch{} }, 60000);
-
   } catch(e) {
     console.log(e);
-    res.json({error:'Failed, try again. Make sure number is correct with country code. Error: '+e.message});
+    res.json({error:'Failed, try again. '+e.message});
   }
 });
 
